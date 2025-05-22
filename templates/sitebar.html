@@ -1,0 +1,113 @@
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="/deshboard/">
+          <i class="bi bi-grid nav-link"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->    
+
+     
+      {% if user.is_superuser %}
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 'a002' %} active {% endif %}" href="/authentication/users/">
+          <i class="bi bi-person-circle "></i><span>Users</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 'a003' %} active {% endif %}" href="/courses/courses-admin/">
+          <i class="bi bi-book"></i><span>Courses</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 'a001' %} active {% endif %} " href="/authentication/register/">
+          <i class="bi bi-menu-button-wide"></i><span>Register</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+
+      <li class="nav-item">
+        <a class="nav-link" href="/authentication/logout/">
+          <i class="bi bi-box-arrow-left"></i><span>Logout</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+      {% elif user.is_teacher  %}
+
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-box-arrow-left"></i><span>My Scdules</span><i class=" ms-auto"></i>
+        </a>  
+      </li>
+
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 't001' %} active {% endif %}" href="/courses/courses-teachers/">
+          <i class="bi bi-box-arrow-left"></i><span>Courses</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 't002' %} active {% endif %}" href="/courses/exames-teachers/">
+          <i class="bi bi-box-arrow-left"></i><span>Exams</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+      
+      <!-- End Components Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link" href="/authentication/logout/">
+          <i class="bi bi-box-arrow-left"></i><span>Logout</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+
+
+
+      
+      <!-- Student view url here -->
+      {% elif user.is_student  %}
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 's001' %} active {% endif %}" href="/courses/">
+          <i class="bi bi-box-arrow-left"></i><span>Find Courses</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 's002' %} active {% endif %}" href="/courses/my-courses-student/">
+          <i class="bi bi-box-arrow-left"></i><span>My Courses</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="/authentication/logout/">
+          <i class="bi bi-box-arrow-left"></i><span>Logout</span><i class=" ms-auto"></i>
+        </a>  
+      </li><!-- End Components Nav -->
+   
+
+      {% endif %}
+
+      
+      
+
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+

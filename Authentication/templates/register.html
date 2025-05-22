@@ -1,0 +1,63 @@
+{% extends 'mainpage.html' %}
+
+{% block title %}
+ThakpolyEducare - Register
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div style="border: 0.5px solid rgb(255, 68, 0); border-radius: 5px;">
+        <div class="card-header text-dark text-center">
+          <h4>Register</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <div class="form-group mb-3 mt-3">
+                <label for="username" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
+            </div>
+
+
+            <div class="form-group mb-3 mt-3">
+                <label for="username" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
+            </div>
+
+
+            <div class="form-group mb-3 mt-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="email" class="form-label">Department Code</label>
+              <input type="text" class="form-control" id="email" name="department_code" required>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password1" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password1" name="password1" required>
+            </div>
+            <div class="form-group mb-3">
+              <label for="password2" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="password2" name="password2" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn text-white btn-primary">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

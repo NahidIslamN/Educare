@@ -1,0 +1,392 @@
+{% extends 'mainpage.html' %}
+
+{% block title %}ThakpolyEduCare-Exams{% endblock title %}
+
+
+
+
+{% block content %}
+
+{% if messages %}
+{{message.tags}}  
+<div class="alert alert-primary" role = 'alert'>
+  {% for message in messages %}
+  {{message}}
+  {% endfor %}
+
+</div>
+{% endif %}
+
+
+<hr>
+
+
+<div class="pt-3">          
+                          
+    <ul class="sidebar-nav" id="sidebar-nav">
+                
+      {% for x in exam_with_questions %}
+      <span class="card p-4">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered-{{x.0.id}}" class="btn btn-outline-success d-block w-25 me-auto mb-3" href="#">edite exam</button>
+      <li class="nav-item">
+        <a class="nav-link " data-bs-target="#components-nav-{{x.0.id}}" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>{{x.0.exam_name}}</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div id="components-nav-{{x.0.id}}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+          <div class="div.container-fluid" >
+                
+                <form action="{% url 'exames-teachers' %}" method="post" >
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="ANSWERSUBMIT"> 
+                    
+                    <!-- Question 1 -->
+                     <div class="row">
+                        {% for q in x.1 %}
+                        <div class="col-lg-6">
+                            <div class="mb-4">
+                                <h5>{{forloop.counter}}. {{q.question}}</h5>
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{forloop.counter}}a" value="a">
+                                <label class="form-check-label" for="q{{forloop.counter}}a">a) {{q.option1}}</label>
+                                </div>
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{forloop.counter}}b" value="b">
+                                <label class="form-check-label" for="q{{forloop.counter}}b">b) {{q.option2}}</label>
+                                </div>
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{forloop.counter}}c" value="c">
+                                <label class="form-check-label" for="q{{forloop.counter}}c">c) {{q.option3}}</label>
+                                </div>
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{forloop.counter}}d" value="d">
+                                <label class="form-check-label" for="q{{forloop.counter}}d">d) {{q.option4}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                     </div>
+                    
+                
+
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+
+
+    
+
+                <hr>
+
+                <div id="questioncreatefrom-{{x.0.id}}"></div>
+
+                <button onclick="questionfrom({{x.0.id}})" class="btn btn-outline-warning w-100">Create Question</button>
+
+                
+          
+          
+          </div>
+
+        </div>
+              
+
+      </li><!-- End Components Nav -->
+
+      
+
+      </span>
+      {% endfor %}
+
+   
+      
+      
+    </ul>
+          
+           <!-- End Sidebar--> 
+          
+  
+  
+</div>
+
+<hr>
+<div id="examcreatefrom" ></div>
+<button class="btn btn-outline-warning d-block w-100" href="#" onclick="showForm()">create a new</button>
+
+
+
+
+
+
+{% for em in exam_with_questions %}
+<div class="modal fade" id="verticalycentered-{{em.0.id}}" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{em.0.exam_name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">        
+                  
+              
+            <form method="post" action="{% url 'exames-teachers' %}" enctype="multipart/form-data">
+              {% csrf_token %}
+    
+              <input type="hidden" name="_method" value="EXAMUPDATE"> 
+  
+              <input type="hidden" name="exam_id" value="{{em.0.id}}" id="">
+
+              <input type="hidden" name="subject_id" value="{{em.0.subject.id}}">
+
+
+              <div class="row">
+
+
+                <div class="col-sm-6 mb-2">
+                    <label  class="form-label">Exam Name</label>
+                    <input type="text" class="form-control"   name="exam_name" value="{{em.0.exam_name}}" >
+                </div>
+
+
+                <div class="col-sm-6 mb-2">
+                    <label  class="form-label">Subjects</label>
+                    <select  name='subject_id' id="inputState" class="form-select form-control">
+                    {% if em.0.subject %}   
+                    <option value='{{em.0.subject.id}}' selected="">{{em.0.subject}}</option>
+                    {% else %}
+
+                    <option value='' selected="">Select a Subjects</option>
+
+                    {% endif %}
+
+                    {% for chap in all_subjects %}
+                    <option value="{{chap.id}}" > {{chap.subject_name}}</option>
+                    {% endfor %}
+
+                    </select>
+                </div>
+
+
+                <div class="col-sm-6 mb-2">
+                    <label  class="form-label">Exam Date | {{em.0.exam_date|date}}</label>
+                    <input type="date" class="form-control"   name="exam_date" >
+                </div>
+
+
+                <div class="col-sm-6 mb-2">
+                    <label  class="form-label">Exam Time | {{em.0.exam_time}}</label>
+                    <input type="time" class="form-control"   name="exam_time">
+                </div>
+
+
+                <div class="col-sm-6">
+                    <label  class="form-label">Exam Duration</label>
+                    <input type="number" class="form-control"   name="exam_duration" value="{{em.0.exam_duration}}">
+                </div>
+
+
+                <div class="col-sm-6">
+
+                    <label  class="form-label">Status</label>
+
+                    {% if em.0.status %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" value="1" name="status" checked>                    
+                    </div>
+                    {% else %}
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" value="1" name="status" >                    
+                    </div>
+
+                    {% endif %}
+                   
+                </div>
+
+
+
+
+
+              </div>
+    
+              
+                      
+           
+    
+              <hr class="mt-4">                 
+    
+              <button class="btn btn-white btn-outline-warning text-danger ms-auto d-block w-25" >submit</button> 
+             
+            </form>
+            
+  
+          
+  
+        </div>
+        
+      </div>
+    </div>
+</div>
+{% endfor %}
+  
+
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+{% block extrascripts %}
+
+<script>
+    function showForm() {
+        document.getElementById("examcreatefrom").innerHTML = `
+            <div class="border p-3 rounded bg-light position-relative">
+                <button class="btn-close position-absolute top-0 end-0 p-2" onclick="hideForm2()"></button>
+                <h5 class="mb-3">Create Exam</h5>
+
+                
+                <form action="{% url 'exames-teachers' %}" method="post" %}' >
+
+                    {% csrf_token %}
+
+
+                    <input type="hidden" name="_method" value="EXAMCREAT"> 
+
+
+                    <div class="mb-3">
+                        <label for="examTitle" class="form-label">Exam Title</label>
+                        <input required type="text" name='exam_name' class="form-control" id="examTitle" placeholder="Enter Exam Title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="examDate" class="form-label">Exam Date</label>
+                        <input required type="date" name='date' class="form-control" id="examDate">
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="inputState" class="form-label">Subjects</label>
+                        <select required name='chapter_id' id="inputState" class="form-select form-control">
+                        <option value='' selected="">Select a Subjects</option>
+
+                        {% for chap in all_subjects %}
+                        <option value="{{chap.id}}" > {{chap.subject_name}}</option>
+                        {% endfor %}
+
+                        </select>
+                    </div>
+
+
+
+
+                    
+                    <button type="submit" class="btn btn-outline-primary d-block ms-auto">Submit</button>
+                </form>
+
+
+ 
+                
+            </div>
+        `;
+    }
+
+    function hideForm2() {
+        document.getElementById("examcreatefrom").innerHTML = "";
+    }
+</script>
+
+
+<script>
+    function questionfrom(exam_id) {
+        document.getElementById("questioncreatefrom-" + exam_id).innerHTML = `
+            <div class="border p-3 rounded bg-light position-relative">
+                <button class="btn-close position-absolute top-0 end-0 p-2" onclick="hideForm(${exam_id})"></button>
+                <h5 class="mb-3">Create Question</h5>
+
+                <form action="{% url 'exames-teachers' %}" method="post">
+                    {% csrf_token %}
+
+                  <div class='row' >
+
+                    <input type="hidden" name="_method" value="CHAPTEQUESTION"> 
+
+                    <input type="hidden" value="${exam_id}" class="form-control" name="exam_id">
+
+
+                        
+                    <div class="mb-3 col-sm-6">
+                        <label for="examTitle" class="form-label">Question</label>
+                        <input required type="text" name="question" class="form-control" placeholder='what you want to ask?' id="examTitle" placeholder="Enter Exam Title">
+                    </div>
+
+
+                    <div class="mb-3 col-sm-6">
+                        <label for="examTitle" class="form-label">Correct Answer</label>
+                        <input required type="number" max="4" name="currect_answer" class="form-control" placeholder='correct options' placeholder="Enter Exam Title">
+                    </div>
+
+
+                    <div class="mb-3 col-sm-12">
+                        <label for="examTitle" class="form-label">Mark</label>
+                        <input required type="number" max="5" name="mark" class="form-control" placeholder='correct options'>
+                    </div>
+
+
+
+
+
+                    <div class="mb-3 col-sm-6">
+                        <label for="examDate" class="form-label">Option i</label>
+                        <input required type="text" name="opt1" class="form-control" >
+                    </div>
+
+                    <div class="mb-3 col-sm-6">
+                        <label for="examDate" class="form-label">Option ii</label>
+                        <input required type="text" name="opt2" class="form-control" >
+                    </div>
+
+
+                    <div class="mb-3 col-sm-6">
+                        <label for="examDate" class="form-label">Option iii</label>
+                        <input required type="text" name="opt3" class="form-control" id="examDate">
+                    </div>
+
+
+                    <div class="mb-3 col-sm-6">
+                        <label for="examDate" class="form-label">Option iv</label>
+                        <input required type="text" name="opt4" class="form-control" id="examDate">
+                    </div>
+
+
+
+
+                  </div>
+
+
+                 
+
+                    
+                    <button type="submit" class="btn btn-outline-primary d-block ms-auto">Submit</button>
+                </form>
+            </div>
+        `;
+    }
+
+    function hideForm(exam_id) {
+        document.getElementById("questioncreatefrom-" + exam_id).innerHTML = "";
+    }
+</script>
+
+
+
+
+
+
+{% endblock extrascripts %}

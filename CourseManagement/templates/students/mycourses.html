@@ -1,0 +1,62 @@
+{% extends 'mainpage.html' %}
+
+{% block title %}ThakpolyEduCare-Courses{% endblock title %}
+
+
+
+
+{% block content %}
+
+
+<div class="row">
+   
+    <div class="col-lg-8">
+        <h4 class="mb-3"> <b>My Courses</b></h4>
+        <div class="row">
+            {% for x in subjects %}
+            <div class="col-6 mb-4">
+                <div class="position-relative">
+                    <img class="img-fluid rounded" src="{{ x.subject_image.url }}" alt="Subject image">
+                    <a href="/courses/my-courses-student/{{x.id}}/">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white text-center bg-dark bg-opacity-25 p-3 rounded">
+                        <h5>{{ x.subject_name }}</h5>
+                        <p>{{ x.subject_description|truncatechars:50 }}</p>
+                    </div>
+
+                    </a>
+              
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+
+        <h4 class="mb-3 mt-5"> <b>Best Courses for you!</b></h4>
+        <div class="row">
+            {% for x in subjects %}
+            <div class="col-12 mt-3 ">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <img class="img-fluid rounded w-75 " src="{{ x.subject_image.url }}" alt="Subject image">
+                    </div>
+                    <div class="col-lg-6">
+                        <h5>{{ x.subject_name }}</h5>
+                        <p>{{ x.subject_description|truncatechars:100 }}</p>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock content %}

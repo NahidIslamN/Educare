@@ -1,0 +1,36 @@
+{% extends 'mainpage.html' %}
+
+
+{% block title %}
+My-Courses
+{% endblock title %}
+
+
+
+{% block content %}
+
+<div class="container-fluid">
+   <div class="row">
+
+    {% for c in my_courses %}
+    <div class="col-lg-6 col-md-6 col-12">
+        <a class="text-dark" href="/courses/courses-teachers/details/?cid={{c.id}}">
+            <div style="text-align: justify; border: 1px solid red;" class="card-body mt-2 mb-2">
+                <img class="img-fluid w-100 mt-4" src="{{c.subject_image.url}}" alt="Images">
+                <h3 style="text-shadow: 1px 1px 2px red; color: darkblue;" class="mt-3" >{{c.subject_name}}</h3>
+                {{c.subject_description|slice:"0:250"}}. . .
+    
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+
+    
+
+</div>
+
+<hr>
+
+
+
+{% endblock content %}

@@ -1,0 +1,112 @@
+{% extends 'basepage.html' %}
+
+{% block title %}
+ThakpolyEducare - Login
+{% endblock title %}
+
+{% block extralinks %}
+<style>
+    .login-container {
+        margin-top: 5rem;
+    }
+    .login-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .login-card-header {
+        background-color: #ff6600; /* Orange */
+        color: white;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .login-card-body {
+        padding: 2rem;
+    }
+    .login-card-footer {
+        text-align: center;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .login-card-footer a {
+        color: #ff6600; /* Orange */
+        text-decoration: none;
+    }
+    .login-card-footer a:hover {
+        text-decoration: underline;
+    }
+    .form-group label {
+        font-weight: bold;
+    }
+    .btn-primary {
+        background-color: #ff6600; /* Orange */
+        border-color: #ff6600;
+    }
+    .btn-primary:hover {
+        background-color: #cc5200; /* Darker orange */
+        border-color: #cc5200;
+    }
+</style>
+{% endblock extralinks %}
+
+{% block content %}
+<div class="container login-container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card login-card">
+        <div class="card-header login-card-header">
+          <h4 class="text-center fs-3" >Login</h4>
+        </div>
+        <div class="card-body login-card-body">
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" required>
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer login-card-footer">
+          <a href="#">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+
+{% block extrascripts %}
+<script>
+  document.getElementById('togglePassword').addEventListener('click', function (e) {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = this.querySelector('i');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      passwordIcon.classList.remove('bi-eye');
+      passwordIcon.classList.add('bi-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      passwordIcon.classList.remove('bi-eye-slash');
+      passwordIcon.classList.add('bi-eye');
+    }
+  });
+</script>
+{% endblock extrascripts %}

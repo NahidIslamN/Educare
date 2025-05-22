@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm that's you!</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">an otp sent to your address.</h5>
+        
+        </div>
+        <div class="modal-body">
+
+            <form action="{% url 'login' %}" method="post">
+               {% csrf_token %}
+
+               <input type="hidden" name="_method" value="EMAILVERYFI">
+               <input type="hidden" name="email" value="{{email}}">
+
+
+                <div>
+                    <label for="exampleFormControlInput1" class="form-label">Your OTP</label>
+                    <input class="form-control" type="text" name="otp">
+
+                </div>
+                
+                  <button type="submit" class="btn btn-success mt-3 w-100" data-bs-dismiss="modal">submit</button>
+                
+                
+                
+            </form>
+
+          
+        </div>
+
+  
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js"
+  ></script>
+
+  <!-- Script to Show Modal on Page Load -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const myModal = new bootstrap.Modal(document.getElementById("exampleModal"));
+      myModal.show();
+    });
+  </script>
+</body>
+</html>

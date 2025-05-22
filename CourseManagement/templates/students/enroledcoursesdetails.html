@@ -1,0 +1,675 @@
+{% extends 'mainpage.html' %}
+
+
+{% block title %}
+Course-Details
+{% endblock title %}
+
+{% block extralinks %}
+
+  <style>
+      .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    }
+
+    .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+  </style>
+
+{% endblock extralinks %}
+
+
+{% block content %}
+
+
+
+<section class="section profile">
+
+    <div class="row">  
+           
+      <div class="col-xl-12">  
+        <div class="card">
+            <h2 class="text-center m-3">{{my_course}}</h2> 
+          <div class="card-body pt-3">
+            <!-- Bordered Tabs -->
+            <ul class="nav nav-tabs nav-tabs-bordered">
+  
+              <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Chepters & Lessons</button>
+              </li>
+  
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Assignments</button>
+              </li>
+  
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Exams</button>
+              </li>             
+  
+            </ul>
+
+
+
+  
+            <div class="tab-content pt-2">  
+
+              <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                
+                <ul class="sidebar-nav" id="sidebar-nav">
+                            
+                    {% for ch in chapter_with_lesson %}
+                    <span class="p-4">
+                    <li class="nav-item">
+                    <a class="nav-link " data-bs-target="#components-nav-{{ch.0.id}}" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-menu-button-wide"></i><span>{{ch.0.chapter_name}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+
+                    <div id="components-nav-{{ch.0.id}}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+                        <div class="div.container-fluid" >
+
+                
+
+                        {% for les in ch.1 %}
+                        <div class="row">
+                            <div class="card-header login-card-header mb-3">
+                                <h4>Lesson : {{les.lesson_name}}</h4>
+                                <h6>live class-{{les.live_class_date|date}}</h6>
+
+                                {% if les.live_class_date and les.live_class_date|date:"Y-m-d" == today|date:"Y-m-d" and les.live_class_link %}
+                                <p>{{ les.live_class_link }}</p>
+                                {% else %}
+                                    <p>Live class not added yet</p>
+                                {% endif %}
+
+                
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#lessonRecordClass-{{les.id}}" class="btn btn-outline-primary form-control" >Record Class</button>
+
+
+                    
+                            
+                            </div>
+
+                                                
+                        </div>
+
+
+                        {% endfor %}
+
+
+
+                    </div>
+                            
+
+                    </li><!-- End Components Nav -->
+
+                    
+
+                    </span>
+                    {% endfor %}
+                    
+                    
+                </ul>
+  
+              </div>
+
+
+
+
+
+
+
+
+
+
+  
+        <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+         
+                <ul class="sidebar-nav" id="sidebar-nav">
+                            
+                    {% for ch in chapter_with_lesson %}
+                    <span class="p-4">
+                    <li class="nav-item">
+                    <a class="nav-link " data-bs-target="#components-nav-{{ch.0.id}}" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-menu-button-wide"></i><span>{{ch.0.chapter_name}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+
+                    <div id="components-nav-{{ch.0.id}}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+                        <div class="div.container-fluid" >
+
+                
+
+                        {% for les in ch.1 %}
+                        <div class="row">
+                          {% if les.assignment  %}
+                            <div class="card-header login-card-header mb-3">
+                                <h4>Lesson : {{les.lesson_name}}</h4>
+                                <h6>Assignments</h6>
+                                <p>last date of submit : {{les.lsat_date_of_submission}}</p>
+
+                                {% if les.assignment  %}
+                                <a target="_blank" href="{{les.assignment.url}}"><p>assignment</p></a>
+
+                                {% else %}
+                                    <p>assignment is not provided yet!</p>
+                                {% endif %}
+
+                                {% if les.lsat_date_of_submission and les.lsat_date_of_submission|date:"Y-m-d" >= today|date:"Y-m-d" %}
+
+                                  <form action="{% url 'enrolledcourse' les.id %}" method="post" enctype="multipart/form-data" class="p-3 border rounded shadow-sm bg-light">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="_method" value="ASSIGNMENTSUBMIT"> 
+                                  
+                                  {% csrf_token %}
+                                  
+                                  <div class="mb-3">
+                                    <label for="assignmentAnswer" class="form-label">Assignment Answer</label>
+                                    <input 
+                                      type="file" 
+                                      name="assignment_answer" 
+                                      id="assignmentAnswer-{{les.id}}" 
+                                      class="form-control" 
+                                      placeholder="Enter your answer here" 
+                                      required>
+                                  </div>
+
+                                  <button type="submit" class="btn btn-success w-100">
+                                    Submit
+                                  </button>
+                                </form>
+                                {% endif %}
+
+
+
+                
+                               
+
+
+                    
+                            
+                            </div>
+                          {% endif %}
+
+                                                
+                        </div>
+
+
+                        {% endfor %}
+
+
+
+                    </div>
+                            
+
+                    </li><!-- End Components Nav -->
+
+                    
+
+                    </span>
+                    {% endfor %}
+                    
+                    
+                </ul>     
+                
+                 <!-- End Sidebar--> 
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+  
+              <div class="tab-pane fade pt-3" id="profile-settings">
+                <section class="section">
+                  <div class="row">
+                    <div class="col-lg-12">
+
+                        <ul class="sidebar-nav" id="sidebar-nav">
+                                    
+                          {% for x in exam_with_questions %} 
+                          <li class="nav-item">
+                            <a class="nav-link " data-bs-target="#components-nav-{{x.0.id}}" data-bs-toggle="collapse" href="#">
+                              <i class="bi bi-menu-button-wide"></i><span>{{x.0.exam_name}}</span><i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+
+                            <div id="components-nav-{{x.0.id}}" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+                              <div class="div.container-fluid" >
+                                    
+                                    <form action="{% url 'exames-teachers' %}" method="post" >
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="ANSWERSUBMIT"> 
+                                        
+                                        <!-- Question 1 -->
+                                        <div class="row">
+                                            {% for q in x.1 %}
+                                            <div class="col-lg-6">
+                                                <div class="mb-4">
+                                                    <h5>{{forloop.counter}}. {{q.question}}</h5>
+                                                    <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{q.id}}a" value="a">
+                                                    <label class="form-check-label" for="q{{q.id}}a">a) {{q.option1}}</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{q.id}}b" value="b">
+                                                    <label class="form-check-label" for="q{{q.id}}b">b) {{q.option2}}</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{q.id}}c" value="c">
+                                                    <label class="form-check-label" for="q{{q.id}}c">c) {{q.option3}}</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{q.id}}" id="q{{q.id}}d" value="d">
+                                                    <label class="form-check-label" for="q{{q.id}}d">d) {{q.option4}}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                    
+
+
+                                    <!-- Submit -->
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+
+                                    <hr>
+                              </div>
+
+                            </div>
+                                  
+
+                          </li><!-- End Components Nav -->
+                          {% endfor %}
+
+                      
+                          
+                          
+                        </ul>
+          
+              
+                 
+              
+                    </div>
+                  </div>
+                </section>
+           
+  
+                
+              </div>
+  
+             
+            </div><!-- End Bordered Tabs -->
+  
+          </div>
+        </div>
+  
+      </div>
+    </div>
+</section>
+
+<!-- View by modal view by modal view by modal -->
+
+
+
+
+
+{% for ch in chapter_with_lesson %}
+{% for les in ch.1 %}
+  <div class="modal fade" id="lessonRecordClass-{{les.id}}" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Lesson Record - {{les.lesson_name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          {% if les.lesson_video %}
+          <div class="video-container w-50 me-auto ms-auto">
+            <video src="{{les.lesson_video.url}}" controls></video>
+          </div>        
+          {% else %}
+
+          <div class="video-placeholder">
+            <p>Video not available</p>
+          </div>
+
+          {% endif %}
+
+          <hr>
+
+
+          {% if les.iframe_data %}
+          <div class="me-auto ms-auto w-50">
+            {{les.iframe_data|safe}}
+          </div>        
+          {% else %}
+
+          <div class="video-placeholder">
+            <p>Video not available</p>
+          </div>
+
+          {% endif %}
+
+         
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- End Lesson Record class-->
+{% endfor %}
+{% endfor %}
+
+
+<!-- Student Application Details -->
+{% for app in cs %}
+<div class="modal fade" id="application-{{app.id}}" tabindex="-1">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">Application | {{app.course.subject_name}} | Application id : {{app.id}} </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="container">
+
+           <div class="tab-content pt-2">
+            <div class="row">
+              <div class="col-10 me-auto ms-auto p-4">
+
+                <div class="tab-pane fade profile-edit show active pt-3" id="profile-edit" role="tabpanel">
+
+                  <!-- Profile Edit Form -->
+                  <form>
+                    <div class="row mb-3">
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                      <div class="col-md-8 col-lg-9">
+                        {% if app.student.profile_pic %}
+                        <img width="250px" src="{{app.student.profile_pic.url}}" alt="Profile">
+                        {% else %}
+                        <img width="250px" src="/static/users.jpg" alt="Profile">
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" disabled value="{{app.student.first_name}} {{app.student.last_name}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea disabled name="about" class="form-control" id="about" style="height: 100px">{{app.student.about}}</textarea>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Department</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="company" type="text" class="form-control" id="company" value="{{app.student.department_code}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                      <div class="col-md-8 col-lg-9">
+                        {% if app.student.is_student %}
+                        <input disabled name="job" type="text" class="form-control" id="Job" value="Student">
+                        {% else %}
+                        <input disabled name="job" type="text" class="form-control" id="Job" value="Instractor">
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="country" type="text" class="form-control" id="Country" value="{{app.student.country}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="address" type="text" class="form-control" id="Address" value="{{app.student.address}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="phone" type="text" class="form-control" id="Phone" value="{{app.student.phone}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="email" type="email" class="form-control" id="Email" value="{{app.student.email}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="twitter" type="text" class="form-control" id="Twitter" value="{{app.student.tweter_url}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="facebook" type="text" class="form-control" id="Facebook" value="{{app.student.facebook_url}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="instagram" type="text" class="form-control" id="Instagram" value="{{app.student.instagram_url}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input disabled name="linkedin" type="text" class="form-control" id="Linkedin" value="{{app.student.linkedin_url}}">
+                      </div>
+                    </div>
+
+                    
+                  </form><!-- End Profile Edit Form -->
+                  
+
+                  <form action="{% url 'teachers-course-details' %}" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="_method" value="APPLACATIONACCEPT"> 
+
+                    <input type="hidden" name="application_id" value="{{app.id}}" >
+
+
+                    <hr>
+
+                    <div class="row">
+
+                      <div class="col-6">
+                        {% if app.status %}
+                        <input value="1" checked name="status" type="checkbox" id="example-{{app.id}}"/>
+                        {% else %}
+                        <input value="1" name="status" type="checkbox" id="example-{{app.id}}"/>
+                        {% endif %}
+                        <label for="example-{{app.id}}" class="toggle">
+                        <div class="slider"></div>
+                        </label>
+
+                      </div>
+
+                      <div class="col-6">
+                        <button class="btn btn-outline-warning d-block ms-auto">save changes</button>
+                      </div>
+
+                    </div>
+                    
+
+                    
+                  </form>
+
+                </div>
+
+
+              </div>
+            </div>
+
+              
+          </div>
+
+        </div>
+
+       
+
+       
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endfor %}
+<!-- End Student application details -->
+
+
+
+
+{% for ch in chapter_with_lesson %}
+<div class="modal fade" id="verticalycentered-{{ch.0.id}}" tabindex="-1" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ch.0.chapter_name}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">        
+                
+          <div class="card-header login-card-header mb-3">
+            <h4>Update Chapter</h4>
+          </div>
+
+          <form method="post" action="{% url 'teachers-course-details' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+  
+            <input type="hidden" name="_method" value="CHAPTERUPDATE"> 
+
+            <input type="hidden" name="chapter_id" value="{{ch.0.id}}" id="">
+  
+            <div class="form-group mb-3">
+              <label  class="form-label">Chapter Name <sup style="color: red;">*</sup></label>
+              <input type="text" class="form-control"   name="chapter_name" value="{{ch.0.chapter_name}}" required>
+            </div>
+                    
+            <div class="form-group mb-3">
+              <label for="username" class="form-label">Number of Lesson</label>
+              <input type="number" class="form-control" name="number_of_lessons" value="{{ch.0.number_of_lessons}}" value="">
+            </div>
+  
+            <div class="form-group mb-3">
+              <label for="username" class="form-label">Chapter Plan</label>
+              <input id="pdfInput" type="file" class="form-control" name="chapter_plan">
+            </div>
+  
+            <hr class="mt-4">                 
+  
+            <button class="btn btn-white btn-outline-warning text-danger ms-auto d-block w-25" >submit</button> 
+           
+          </form>
+          
+
+        
+
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+{% block extrascripts %}
+
+
+
+
+{% for ch in chapter_with_lesson %}
+{% for les in ch.1 %}
+<script>
+document.getElementById("assignmentAnswer-{{les.id}}").addEventListener("change", function () {
+    const file = this.files[0];
+    const maxSize = 500 * 1024; // 20 KB
+
+    if (file && file.size > maxSize) {
+        alert("File size must be less than 500 KB.");
+        this.value = ""; // Clear the file input
+    }
+});
+</script>
+
+{% endfor %}
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock extrascripts %}
+
+

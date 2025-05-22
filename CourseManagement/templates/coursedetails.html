@@ -1,0 +1,152 @@
+{% extends 'mainpage.html' %}
+
+
+
+{% block title %}
+ThakpolyEducare Admin-Subjects Details 
+{% endblock title %}
+
+
+
+{% block content %}
+
+
+<div class="col-md-12">
+    <div class=" login-card">
+      <div class="card-header login-card-header mb-3">
+        <h4>Subject Details</h4>
+      </div>
+
+
+      <div class="card-body login-card-body">
+
+        <form method="post" action="{% url 'admin-course-details' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <input type="hidden" name="_method" value="EDITECOURSE">
+
+          <input type="hidden" type="number" name="subject_id" value="{{subject.id}}">
+
+
+          <div class="form-group mb-3">
+            <label  class="form-label">Subject Name</label>
+            <input type="text" class="form-control" value="{{subject.subject_name}}"  name="subject_name" required>
+          </div>
+          
+          <div class="form-group mb-3">
+            <label for="username" class="form-label">Subject Discriptions</label>
+            <textarea type="text" class="form-control" name="subject_description" required>{{subject.subject_description}}</textarea>
+          </div>
+
+
+          <div class="form-group mb-3">
+            <label for="username" class="form-label">Course Fee</label>
+            <input type="number" class="form-control" name="course_enrole_fee" value="{{subject.course_enrole_fee}}" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Semester</label>
+            <input type="number" class="form-control"  name="senester_rank" value="{{subject.senester_rank}}" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">Teachers</label>
+            
+              <select class="form-select" aria-label="Default select example" name="teacher_id" required>
+                <option selected="" value="{{subject.teacher.id}}">{{subject.teacher.first_name}} {{subject.teacher.last_name}} - {{subject.teacher.department_code}}</option>
+                {% for x in teachers %}
+                <option value="{{x.id}}">                                  
+                  {{x.first_name}} {{x.last_name}} - {{x.department_code}}
+                </option>
+                {% endfor %}
+                
+              </select>
+            
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="username" class="form-label">Cover Image</label>
+            <input type="file" class="form-control" name="subject_image">
+          </div>
+
+          <hr class="mt-4">
+          <div class="row">
+
+            <div class="col-6">
+              <div class="form-check">
+                {% if subject.status %}
+                <input class="form-check-input" name="status" checked type="checkbox" value="1" id="flexCheckIndeterminate">
+
+                {% else %}
+                <input class="form-check-input" type="checkbox" name="status" value="0" id="flexCheckIndeterminate">
+                {% endif %}
+                <label class="form-check-label" for="flexCheckIndeterminate">
+                 status
+                </label>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-check">
+                {% if subject.is_admin_aproved %}
+                <input class="form-check-input" name="admin_aprove" checked type="checkbox" value="1" id="flexCheckIndeterminate2">
+
+                {% else %}
+                <input class="form-check-input" name="admin_aprove" type="checkbox" value="0" id="flexCheckIndeterminate2">
+                {% endif %}
+
+                <label class="form-check-label" for="flexCheckIndeterminate2">
+                 Is admin approved
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+
+          <hr>
+
+          <button class="btn btn-white btn-outline-warning text-danger ms-auto d-block w-25" >save changes</button>
+
+
+         
+        </form>
+      </div>
+      
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+
+{% block extrascripts %}
+
+
+<script>
+ document.querySelector('input[name="subject_image"]').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const maxSize = 1000 * 1024; // 200 KB
+    if (file.size > maxSize) {
+        alert('File size must be less than 1 MB.');
+        event.target.value = '';
+        return;
+    }
+
+    const img = new Image();
+    img.onload = function () {
+        if (img.height !== 300 || img.width !== 500) {
+            alert('Image dimensions must be exactly 300px height and 500px width.');
+            event.target.value = '';
+            return;
+        }
+    };
+    img.src = URL.createObjectURL(file);
+});
+
+</script>
+
+{% endblock extrascripts %}
+

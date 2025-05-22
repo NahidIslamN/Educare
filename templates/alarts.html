@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SweetAlert For You</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <script>
+        // Show the SweetAlert when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            Swal.fire({
+                title: '{{title}}',
+                text: '{{text}}',
+                icon: '{{icon}}',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the previous URL
+                    window.history.back()
+        
+                }
+            });
+        });
+    </script>
+</body>
+</html>

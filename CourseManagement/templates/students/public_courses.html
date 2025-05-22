@@ -1,0 +1,296 @@
+{% extends 'basepage.html' %}
+
+
+{% block title %}
+ThakpolyEduCare-All Courses
+{% endblock title %}
+
+
+{% block extralinks %}
+<style>
+    .btn {
+        transition: all 0.3s ease; /* Smooth transition for all properties */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* Bootstrap primary color */
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+        transform: scale(1.05); /* Slightly enlarge the button */
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap danger color */
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Darker shade on hover */
+        transform: scale(1.05); /* Slightly enlarge the button */
+    }
+</style>
+
+
+{% endblock extralinks %}
+
+
+
+{% block content %}
+
+
+<div>
+
+    
+<div class="container">
+
+    <h1 class="mt-5">Search your Course here</h1>
+
+    <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search...">
+
+
+    <div class="row" id="cardContainer">
+
+        {% for sub in all_course %}
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card">
+
+                <div style="border: 1px solid orangered;" class="card-body">
+                    {% if sub.subject_image %}
+                    <img class="img-fluid w-block w-100 mt-3" src="{{sub.subject_image.url}}" alt="">
+                    {% else %}
+
+                    <img class="img-fluid w-block w-100 mt-3" src="/static/assets/img/5x3_y35lPCm.jpg" alt="">
+
+                    {% endif %}
+
+                    <h5 class="card-title">{{sub.subject_name}}</h5>
+                 
+                    <p style="text-align: justify;" class="card-text">{{sub.subject_description|slice:"0:60"}}...</p>
+
+
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#CourseDetails-{{sub.id}}" class="btn btn-primary" href="#"> learn more</button>
+                        </div>
+
+                        <div class="col-6">
+                            {% if user.is_authenticated %}
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{sub.id}}" class="btn btn-danger" href="#">Enroll Now</button>
+                            {% else %}
+                            <button type="button" disabled  class="btn btn-danger" href="#">Enroll Now</button>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    
+
+              
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+    </div>
+
+</div>
+
+<!-- Learn more of course -->
+{% for sub in all_course %}
+
+<div class="modal fade" id="CourseDetails-{{sub.id}}" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Subject | {{sub.subject_name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4 col-md-5 col-sm-12">
+
+                        {% if sub.subject_image %}
+                        <img class="img-fluid w-block w-100 mt-3" src="{{sub.subject_image.url}}" alt="">
+                        {% else %}
+    
+                        <img class="img-fluid w-block w-100 mt-3" src="/static/assets/img/5x3_y35lPCm.jpg" alt="">
+    
+                        {% endif %}
+
+
+                        <div class="row">
+                            <div class="col-8 align-items-center mt-3">
+                                {% if sub.teacher.profile_pic %}
+                                <img style="width: 40px ;" src="{{sub.teacher.profile_pic.url}}" class="img-fluid rounded-circle" alt="">
+                                {% else %}
+                                <img style="width: 50px ;" src="/static/users.jpg" class="img-fluid rounded-circle" alt="">
+                                {% endif %}
+                                <a href="" class="trainer-link p-3 pt-5">{{sub.teacher.first_name}} {{sub.teacher.last_name}}</a>
+
+                            </div>
+
+                            <div class="col-4">
+                                
+                                <i style="float: right;" class="bi bi-person user-icon d-block  p-3 pt-4">50</i>
+                                
+                            </div>
+                        </div>
+
+
+
+                       
+
+                        
+                
+
+                    </div>
+
+                    <div class="col-lg-8 col-md-7 col-sm-12">
+                        <p style="text-align: justify;" class="mt-3">{{sub.subject_description}}</p>
+                        <hr>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+
+         
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-danger" href="#">Enroll Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+<!-- learn more of course -->
+
+
+
+
+
+
+
+
+<!-- course enroll section -->
+ <!-- Button trigger modal -->  
+  <!-- Modal -->
+  {% for sub in all_course %}
+  <div class="modal fade" id="staticBackdrop-{{sub.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Enroll to {{sub.subject_name}}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <form method="post" action="{% url 'courses' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+      
+                <input type="hidden" name="_method" value="ENROLLMENT">
+      
+                <input type="hidden" type="number" name="subject_id" value="{{sub.id}}">
+      
+      
+                <div class="form-group mb-3">
+                  <label  class="form-label">Subject</label>
+                  <input type="text" class="form-control" value="{{sub.subject_name}}" disabled  name="subject_name" required>
+                </div>
+
+                
+      
+                <div class="form-group mb-3">
+                  <label for="username" class="form-label">Payment info</label>
+                  <textarea class="form-control" name="payment_info" id=""></textarea>
+                </div>
+      
+      
+      
+                <hr>
+                
+                <button class="btn btn-white btn-outline-warning text-danger ms-auto d-block w-100" >submit application</button>
+      
+      
+               
+              </form>
+
+
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <!-- End of enrol modal -->
+
+
+
+{% endblock content %}
+
+
+{% block extrascripts %}
+
+<script>
+
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+
+        const filter = this.value.toLowerCase();
+
+        const cards = document.querySelectorAll('.card');
+
+
+        cards.forEach(card => {
+
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+
+            const description = card.querySelector('.card-text').textContent.toLowerCase();
+
+
+            if (title.includes(filter) || description.includes(filter)) {
+
+                card.parentElement.style.display = 'block'; // Show card
+
+            } else {
+
+                card.parentElement.style.display = 'none'; // Hide card
+
+            }
+
+        });
+
+    });
+
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock extrascripts %}
+
+
+
+
+
