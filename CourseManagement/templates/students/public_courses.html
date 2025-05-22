@@ -58,42 +58,35 @@ ThakpolyEduCare-All Courses
         <div class="col-lg-4 col-md-6">
 
             <div class="card">
+                <div style="border: 1px solid orangered;" class="card-body position-relative p-0">
 
-                <div style="border: 1px solid orangered;" class="card-body">
-                    {% if sub.subject_image %}
-                    <img class="img-fluid w-block w-100 mt-3" src="{{sub.subject_image.url}}" alt="">
-                    {% else %}
+                    <div class="position-relative">
+                        {% if sub.subject_image %}
+                        <img class="img-fluid w-100" src="{{sub.subject_image.url}}" alt="">
+                        {% else %}
+                        <img class="img-fluid w-100" src="/static/assets/img/5x3_y35lPCm.jpg" alt="">
+                        {% endif %}
 
-                    <img class="img-fluid w-block w-100 mt-3" src="/static/assets/img/5x3_y35lPCm.jpg" alt="">
-
-                    {% endif %}
-
-                    <h5 class="card-title">{{sub.subject_name}}</h5>
-                 
-                    <p style="text-align: justify;" class="card-text">{{sub.subject_description|slice:"0:60"}}...</p>
-
-
-                    <div class="row">
-                        <div class="col-6">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#CourseDetails-{{sub.id}}" class="btn btn-primary" href="#"> learn more</button>
+                        <!-- Text Overlay -->
+                        <div class="overlay-text position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white p-3" style="background: rgba(0, 0, 0, 0.4);">
+                            <h5 class="card-title text-white">{{ sub.subject_name }}</h5>
+                            <p class="card-text text-center">{{ sub.subject_description|slice:"0:60" }}...</p>
                         </div>
+                    </div>
 
+                    <div class="row p-3">
+                        <div class="col-6">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#CourseDetails-{{sub.id}}" class="btn btn-primary w-100">Learn More</button>
+                        </div>
                         <div class="col-6">
                             {% if user.is_authenticated %}
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{sub.id}}" class="btn btn-danger" href="#">Enroll Now</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{sub.id}}" class="btn btn-danger w-100">Enroll Now</button>
                             {% else %}
-                            <button type="button" disabled  class="btn btn-danger" href="#">Enroll Now</button>
+                            <button type="button" disabled class="btn btn-danger w-100">Enroll Now</button>
                             {% endif %}
                         </div>
-
                     </div>
-                    
-
-              
-                    
-
                 </div>
-
             </div>
 
         </div>

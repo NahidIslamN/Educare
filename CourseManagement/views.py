@@ -605,7 +605,7 @@ class CoursesStudents(View):
     def get(self, request):
         try:
             users = request.user
-            all_course = Subjects.objects.filter(senester_rank = users.semester).order_by('-created_at')
+            all_course = Subjects.objects.filter(status = True).order_by('-created_at')
             cp = {
                 'active_id':"s001",
                 'all_course':all_course
