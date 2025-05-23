@@ -65,7 +65,15 @@
                 </ul>
               </li>
               <li class="nav-item">
+                {% if user.is_authenticated %}
+                 <li class="nav-item">
+                  <a class="nav-link p-3 {% if active_id == 'b002' %} active {% endif %}" href="/authentication/logout/">logout</a>
+                </li>
+                {% else %}
                 <a class="btn btn-outline-primary p-3 ms-3" href="/authentication/login/"><span class="p-3">Login here</span></a>
+                
+                {% endif %}
+
               </li>
             </ul>
           </div>

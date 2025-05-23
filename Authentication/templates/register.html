@@ -1,7 +1,7 @@
-{% extends 'mainpage.html' %}
+{% extends 'basepage.html' %}
 
 {% block title %}
-ThakpolyEducare - Register
+EDUCARE- REGISTER
 {% endblock title %}
 
 {% block content %}
@@ -39,11 +39,6 @@ ThakpolyEducare - Register
             </div>
 
             <div class="form-group mb-3">
-              <label for="email" class="form-label">Department Code</label>
-              <input type="text" class="form-control" id="email" name="department_code" required>
-            </div>
-
-            <div class="form-group mb-3">
               <label for="password1" class="form-label">Password</label>
               <input type="password" class="form-control" id="password1" name="password1" required>
             </div>
@@ -53,6 +48,7 @@ ThakpolyEducare - Register
             </div>
             <div class="d-grid">
               <button type="submit" class="btn text-white btn-primary">Register</button>
+              already have an account? <a href="/authentication/login/">login</a>
             </div>
           </form>
         </div>

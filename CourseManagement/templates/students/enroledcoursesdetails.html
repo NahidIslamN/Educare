@@ -2,7 +2,7 @@
 
 
 {% block title %}
-Course-Details
+COURSE-DETAILS
 {% endblock title %}
 
 {% block extralinks %}
@@ -253,7 +253,7 @@ Course-Details
 
                               <div class="div.container-fluid" >
                                     
-                                    <form action="{% url 'exames-teachers' %}" method="post" >
+                                    <form action="{% url 'enrolledcourse' x.0.id %}" method="post" >
                                         {% csrf_token %}
                                         <input type="hidden" name="_method" value="ANSWERSUBMIT"> 
                                         
@@ -288,10 +288,15 @@ Course-Details
 
 
                                     <!-- Submit -->
+                                    {% if x.0.exam_date|date:"Y-m-d" == today|date:"Y-m-d" %}
                                     <button type="submit" class="btn btn-primary">Submit</button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-primary disabled">Submit</button>
+                                    {% endif %}
                                     </form>
 
                                     <hr>
+                                    <a class="btn btn-outline-warning d-block w-100" href="/courses/view-result/{{x.0.id}}/">view result</a>
                               </div>
 
                             </div>

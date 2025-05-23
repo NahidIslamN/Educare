@@ -18,6 +18,12 @@
         </a>  
       </li><!-- End Components Nav -->
 
+      <li class="nav-item">
+        <a class="nav-link {% if active_id == 't00calender' %} active {% endif %}" href="/courses/academic-calender/">
+          <i class="bi bi-7-circle-fill"></i><span>Academic Calendar</span><i class=" ms-auto"></i>
+        </a>  
+      </li>
+
 
       <li class="nav-item">
         <a class="nav-link {% if active_id == 'a003' %} active {% endif %}" href="/courses/courses-admin/">
@@ -45,22 +51,22 @@
       {% elif user.is_teacher  %}
 
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-box-arrow-left"></i><span>My Scdules</span><i class=" ms-auto"></i>
+        <a class="nav-link {% if active_id == 't00calender' %} active {% endif %}" href="/courses/academic-calender/">
+          <i class="bi bi-7-circle-fill"></i><span>Academic Calendar</span><i class=" ms-auto"></i>
         </a>  
       </li>
 
 
       <li class="nav-item">
         <a class="nav-link {% if active_id == 't001' %} active {% endif %}" href="/courses/courses-teachers/">
-          <i class="bi bi-box-arrow-left"></i><span>Courses</span><i class=" ms-auto"></i>
+          <i class="bi bi-book-half"></i><span>Courses</span><i class=" ms-auto"></i>
         </a>  
       </li><!-- End Components Nav -->
 
 
       <li class="nav-item">
         <a class="nav-link {% if active_id == 't002' %} active {% endif %}" href="/courses/exames-teachers/">
-          <i class="bi bi-box-arrow-left"></i><span>Exams</span><i class=" ms-auto"></i>
+          <i class="bi bi-person-bounding-box"></i><span>Exams</span><i class=" ms-auto"></i>
         </a>  
       </li><!-- End Components Nav -->
       
@@ -82,17 +88,26 @@
       {% elif user.is_student  %}
 
       <li class="nav-item">
+        <a class="nav-link {% if active_id == 't00calender' %} active {% endif %}" href="/courses/academic-calender/">
+          <i class="bi bi-7-circle-fill"></i><span>Academic Calendar</span><i class=" ms-auto"></i>
+        </a>  
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link {% if active_id == 's001' %} active {% endif %}" href="/courses/">
-          <i class="bi bi-box-arrow-left"></i><span>Find Courses</span><i class=" ms-auto"></i>
+          <i class="bi bi-search"></i><span>Find Courses</span><i class=" ms-auto"></i>
         </a>  
       </li><!-- End Components Nav -->
 
 
       <li class="nav-item">
         <a class="nav-link {% if active_id == 's002' %} active {% endif %}" href="/courses/my-courses-student/">
-          <i class="bi bi-box-arrow-left"></i><span>My Courses</span><i class=" ms-auto"></i>
+          <i class="bi bi-book-half"></i><span>My Courses</span><i class=" ms-auto"></i>
         </a>  
       </li><!-- End Components Nav -->
+
+      
+     
 
       <li class="nav-item">
         <a class="nav-link" href="/authentication/logout/">

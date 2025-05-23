@@ -183,8 +183,71 @@ class CourseDetails(View):
 
 
 
+from django.shortcuts import render
+from datetime import date
+from .models import Subjects, Lessons, Exams
 
-#### Teacher works here######
+@login_required
+def academic_calendar_public_view(request):
+    # সব সাবজেক্ট (public)
+    subjects = Subjects.objects.filter(status=True, is_admin_aproved=True)
+
+    # সব লাইভ ক্লাস যেগুলোর সময় নির্ধারিত
+    lessons = Lessons.objects.filter(
+        chapter__subject__in=subjects,
+        status=True,
+        live_class_date__isnull=False
+    )
+
+    # অ্যাসাইনমেন্ট যেগুলোর সাবমিশন ডেট আছে
+    deadlines = Lessons.objects.filter(
+        chapter__subject__in=subjects,
+        status=True,
+        lsat_date_of_submission__isnull=False
+    )
+
+    # সব এপ্রুভড এক্সাম
+    exams = Exams.objects.filter(
+        subject__in=subjects,
+        exam_date__isnull=False
+    )
+
+    events = []
+
+    for lesson in lessons:
+        events.append({
+            'title': f"Live Class: {lesson.lesson_name}, {lesson.chapter.subject}",
+            'date': lesson.live_class_date.isoformat(),  # ✅ সময়সহ ISO format
+            'type': 'live_class'
+        })
+
+    for lesson in deadlines:
+        # অ্যাসাইনমেন্টে শুধু দিন থাকলে সেটাকে সকাল ৮টা ধরছি (উদাহরণ)
+        events.append({
+            'title': f"Assignment Due: {lesson.lesson_name},{lesson.chapter.subject}",
+            'date': lesson.lsat_date_of_submission.strftime('%Y-%m-%dT08:00:00'),
+            'type': 'assignment_due'
+        })
+
+    for exam in exams:
+        exam_datetime = (
+            f"{exam.exam_date}T{exam.exam_time}" if exam.exam_time else f"{exam.exam_date}T08:00:00"
+        )
+        events.append({
+            'title': f"Exam: {exam.exam_name}",
+            'date': exam_datetime,
+            'type': 'exam'
+        })
+    
+    print(events)
+
+    context = {
+        'events': events,
+        'today': date.today().isoformat(),
+    }
+    return render(request, 'teachers/techerscdule.html', context)
+
+
 
 
 class MyCourses(View):
@@ -603,21 +666,13 @@ class CoursesStudents(View):
     # @method_decorator(login_required)
     
     def get(self, request):
-        try:
-            users = request.user
-            all_course = Subjects.objects.filter(status = True).order_by('-created_at')
-            cp = {
-                'active_id':"s001",
-                'all_course':all_course
-            }
-            return render(request, 'students/allcourse.html', context=cp)
-        except:
-            all_course = Subjects.objects.filter().order_by('-created_at')
-            cp = {
-                'active_id':"s001",
-                'all_course':all_course
-            }
-            return render(request, 'students/public_courses.html', context=cp)
+
+        all_course = Subjects.objects.filter(status = True).order_by('-created_at')
+        cp = {
+            'active_id':"s001",
+            'all_course':all_course
+        }
+        return render(request, 'students/public_courses.html', context=cp)
     
     @method_decorator(login_required)
     def post(self, request):
@@ -732,9 +787,38 @@ class EnroledCourseDetails(View):
     def post(self, request, pk):
         method = request.POST.get('_method', '').upper()
         if method == "ANSWERSUBMIT":
-            data = request.POST
-            print(data)
-            return redirect('/')
+           
+            exam = Exams.objects.get(id=pk)
+            student = request.user
+
+            for key, value in request.POST.items():
+                if key.isdigit():
+                    question = Questions.objects.get(id=int(key))
+                    selected_letter = value  # e.g., 'a', 'b', 'c', 'd'
+
+                    # Map letter to actual option text
+                    option_map = {
+                        'a': question.option1,
+                        'b': question.option2,
+                        'c': question.option3,
+                        'd': question.option4
+                    }
+
+                    selected_answer = option_map.get(selected_letter, '')
+                    marks = 0
+                    if selected_answer == question.correct_option:
+                        marks = question.marks
+                    
+
+                    StudentAnswer.objects.update_or_create(
+                        student=student,
+                        exam=exam,
+                        question=question,
+                        defaults={'answer': selected_answer, 'marks': marks}
+                    )
+
+            return redirect('/courses/my-courses-student/')
+
         elif method == "ASSIGNMENTSUBMIT":
             student = request.user
             file = request.FILES.get('assignment_answer')
@@ -772,7 +856,34 @@ class EnroledCourseDetails(View):
             return redirect (f'my-courses-student/{pk}/')
         
 
+class ViewResults(View):
+    def get(self, request, pk):
+        student = request.user
+        exam_id = None
 
+        try:
+            exam_id = Exams.objects.get(id = pk)
+        except Exams.DoesNotExist:
+            pass
 
+        question = Questions.objects.filter(exam = exam_id)
+        answers = StudentAnswer.objects.filter(student =student, exam=exam_id)
+
+        totalmark = 0
+        for x in question:
+            totalmark = totalmark + x.marks
+
+        getmakrs = 0
+
+        for g in answers:
+            getmakrs = getmakrs + g.marks
+
+        
+
+        cp={
+            'total_marks':totalmark,
+            'get_marks':getmakrs
+        }
+        return render(request, 'students/resutl.html', context=cp)
 
     

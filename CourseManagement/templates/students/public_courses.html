@@ -2,7 +2,7 @@
 
 
 {% block title %}
-ThakpolyEduCare-All Courses
+EDUCARE-All COURSES
 {% endblock title %}
 
 
@@ -69,7 +69,7 @@ ThakpolyEduCare-All Courses
 
                         <!-- Text Overlay -->
                         <div class="overlay-text position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white p-3" style="background: rgba(0, 0, 0, 0.4);">
-                            <h5 class="card-title text-white">{{ sub.subject_name }}</h5>
+                            <h5 class="card-title">{{ sub.subject_name }}</h5>
                             <p class="card-text text-center">{{ sub.subject_description|slice:"0:60" }}...</p>
                         </div>
                     </div>
@@ -166,9 +166,13 @@ ThakpolyEduCare-All Courses
          
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button class="btn btn-danger" href="#">Enroll Now</button>
+            {% if user.is_authenticated %}
+            <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{sub.id}}" class="btn btn-danger" href="#">Enroll Now</button>
+            {% else %}
+            <button type="button" disabled  class="btn btn-danger" href="#">Enroll Now</button>
+            {% endif %}
         </div>
+
       </div>
     </div>
   </div>
@@ -211,7 +215,7 @@ ThakpolyEduCare-All Courses
                 
       
                 <div class="form-group mb-3">
-                  <label for="username" class="form-label">Payment info</label>
+                  <label for="username" class="form-label">Why Joining?</label>
                   <textarea class="form-control" name="payment_info" id=""></textarea>
                 </div>
       

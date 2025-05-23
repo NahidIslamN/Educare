@@ -1,0 +1,85 @@
+
+{% extends 'mainpage.html' %}
+
+{% block title %}
+ACADEMIC CALENDAR
+{% endblock title %}
+
+
+{% block extralinks %}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+{% endblock extralinks %}
+
+{% block content %}
+
+
+
+    <h1>Academic Calendar</h1>
+    <div id='calendar'></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: '{{ today }}',
+            timeZone: 'Asia/Dhaka',
+            nowIndicator: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            events: [
+                {% for event in events %}
+                    {
+                        title: '{{ event.title }}',
+                        start: '{{ event.date }}',
+                        extendedProps: {
+                            description: '{{ event.title }} - Date: {{ event.date }}'
+                        },
+                        color: {% if event.type == 'live_class' %} '#3c8dbc'
+                               {% elif event.type == 'assignment_due' %} '#f39c12'
+                               {% else %} '#dd4b39' {% endif %}
+                    },
+                {% endfor %}
+            ],
+            eventDidMount: function(info) {
+                const tooltip = document.createElement('div');
+                tooltip.innerText = info.event.extendedProps.description;
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = '#fff';
+                tooltip.style.padding = '5px 10px';
+                tooltip.style.borderRadius = '5px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.whiteSpace = 'nowrap';
+                tooltip.style.zIndex = '1000';
+                tooltip.style.display = 'none';
+
+                document.body.appendChild(tooltip);
+
+                info.el.addEventListener('mouseenter', function(e) {
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (e.pageX + 10) + 'px';
+                    tooltip.style.top = (e.pageY + 10) + 'px';
+                });
+
+                info.el.addEventListener('mousemove', function(e) {
+                    tooltip.style.left = (e.pageX + 10) + 'px';
+                    tooltip.style.top = (e.pageY + 10) + 'px';
+                });
+
+                info.el.addEventListener('mouseleave', function() {
+                    tooltip.style.display = 'none';
+                });
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+
+
+{% endblock content %}

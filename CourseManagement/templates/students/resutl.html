@@ -1,0 +1,47 @@
+{% extends 'mainpage.html' %}
+
+{% block title %}
+EDUCARE RESULT
+{% endblock title %}
+
+
+{% block extralinks %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock extralinks %}
+
+
+
+
+{% block content %}
+
+    <h2>Result Summary</h2>
+
+    <canvas id="resultChart" width="200" height="200"></canvas>
+
+    <script>
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        const resultChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Obtained Marks', 'Remaining Marks'],
+                datasets: [{
+                    data: [{{ get_marks }}, {{ total_marks|get_digit:"0" }} - {{ get_marks }}],
+                    backgroundColor: ['#4CAF50', '#F44336'], // Green & Red
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+
+
+
+
+{% endblock content %}
